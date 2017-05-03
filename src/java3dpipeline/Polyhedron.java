@@ -67,8 +67,7 @@ public class Polyhedron extends GameObject implements Serializable {
 		ArrayList<Polygon> tmp = new ArrayList<Polygon>();
 		for (int a = 0; a < m.object.size(); a++) 
 		{ //Goes through all polygons.
-			m.object.set(a, m.object.get(a).Transform(new Matrix (m.transform.getScale()))); //Scales Polygon.
-			m.object.set(a, m.object.get(a).Transform(new Matrix (m.transform))); //Translates and Rotates Polygon.
+			m.object.set(a, m.object.get(a).Transform(m.getGlobalTransformationMatrix())); //Translates and Rotates Polygon.
 			boolean isVisible = cam.isVisible(m.object.get(a)); //Calculates Polygon visibility.
 			if (isVisible) 
 			{

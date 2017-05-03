@@ -16,8 +16,9 @@ public class Matrix {
 	 */
 	public Matrix (Transform t) 
 	{
-		Translate (t.getPosition());
-		RotateXYZ (t.getRotation());
+		this.matrix = this.multiply(new Matrix (t.getLocalPosition()))
+				.multiply(new Matrix (t.getLocalRotation()))
+				.multiply(new Matrix (t.getLocalScale())).matrix;
 	}
 	/** New Matrix from 2D array.*/
 	public Matrix (double[][] matrix) 
@@ -324,27 +325,6 @@ public class Matrix {
 				}
 			}
 			return m;
-		}
-	}
-	/** Multiplies current Matrix by another Matrix.
-	 * @param m1 the Matrix.
-	 */
-	public void Multiply (Matrix m1) 
-	{
-		if (getColumn() != m1.getRow()) return;
-		else 
-		{
-			for (int a = 0; a < getRow(); a++) 
-			{
-				for (int b = 0; b < m1.getColumn(); b++) 
-				{
-					double sum = 0;
-					for (int c = 0; c < m1.getRow(); c++) 
-						sum += get(a, c)*m1.get(c, b);
-					set(sum, a, b);
-					sum = 0;
-				}
-			}
 		}
 	}
 	/** Returns true if the 2 Matrices are equal.

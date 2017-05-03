@@ -182,7 +182,6 @@ public class Animation extends SwingWorker <Integer, String> implements Serializ
 						target.addScale((((Scale)t).getZ()/(end-start)/100)*loop, Axis.Z);
 					}
 				}
-				f.repaint();
 			}
 			Thread.sleep(10);
 		}

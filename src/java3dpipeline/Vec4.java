@@ -251,7 +251,7 @@ public class Vec4 extends Transformation implements Serializable {
 	}
 	/** Transforms a Vec4 by a Matrix.
 	 * @param v the Vec4 to Tranaform.
-	 * @param m The Matrix to Transform Coordinat with.
+	 * @param m The Matrix to Transform Vec4 with.
 	 */
 	public static Vec4 Transform (Vec4 v, Matrix m) 
 	{

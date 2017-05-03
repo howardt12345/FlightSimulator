@@ -43,12 +43,12 @@ public class Utils {
 	private static int Partition (ArrayList<Polyhedron> data, Camera cam, int left, int right) 
 	{
 		int a = left, b = right;
-		double pivot = Vec4.getDistance(cam.getLookFrom(), data.get((int)Math.rint((left + right) / 2)).getTransform().getPosition());
+		double pivot = Vec4.getDistance(cam.getLookFrom(), data.get((int)Math.rint((left + right) / 2)).getLocalTransform().getLocalPosition());
 		while (a <= b) 
 		{
-			while (Vec4.getDistance(cam.getLookFrom(), data.get(a).getTransform().getPosition()) > pivot)
+			while (Vec4.getDistance(cam.getLookFrom(), data.get(a).getLocalTransform().getLocalPosition()) > pivot)
 				a++;
-			while (Vec4.getDistance(cam.getLookFrom(), data.get(b).getTransform().getPosition()) < pivot)
+			while (Vec4.getDistance(cam.getLookFrom(), data.get(b).getLocalTransform().getLocalPosition()) < pivot)
 				b--;
 			if (a <= b) 
 			{
