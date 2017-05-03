@@ -74,17 +74,17 @@ public class Transform implements Serializable {
 		return position.equals(t.position) && rotation.equals(t.rotation) && scale.equals(t.scale);
 	}
 	/** Gets the position of the Transform as a Vec4.*/
-	public Vec4 getPosition () 
+	public Vec4 getLocalPosition () 
 	{
 		return position;
 	}
 	/** Gets the rotation of the Transform as a Rotation.*/
-	public Rotation getRotation () 
+	public Rotation getLocalRotation () 
 	{
 		return rotation;
 	}
 	/** Gets the scale of the Transform as a Scale.*/
-	public Scale getScale () 
+	public Scale getLocalScale () 
 	{
 		return scale;
 	}
