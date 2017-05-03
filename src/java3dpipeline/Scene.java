@@ -64,6 +64,8 @@ public class Scene implements Serializable {
 			while (input.hasNextLine() || line.hasNext()) 
 			{		
 				String next = line.next().toLowerCase();
+				if (next.equals("break"))
+					break;
 				if (next.equals("ignore")) 
 				{
 					try 
@@ -78,8 +80,8 @@ public class Scene implements Serializable {
 				}
 				else 
 				{
-					if (next.equals("light")) 
-					{
+					switch (next) {
+					case "light":
 						Light l = new Light (new Transform (
 								new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble()), 
 								new Rotation (line.nextDouble(), line.nextDouble(), line.nextDouble())));
@@ -88,9 +90,8 @@ public class Scene implements Serializable {
 						if (line.hasNextDouble()) 
 							l.setRange(line.nextDouble());
 						scene.add(l);
-					}
-					else if (next.equals("polyhedron")) 
-					{
+						break;
+					case "polyhedron":
 						Vec4 v = new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble());
 						Rotation r = new Rotation (line.nextDouble(), line.nextDouble(), line.nextDouble());
 						Scale s = new Scale (line.nextDouble());
@@ -99,15 +100,13 @@ public class Scene implements Serializable {
 						if (line.hasNextDouble()) 
 							s.setZ(line.nextDouble());
 						scene.add(new Polyhedron (new Transform (v, r, s), line.next(), line.nextBoolean()));
-					}
-					else if (next.equals("camera")) 
-					{
+						break;
+					case "camera":
 						cam = new Camera (new Transform (
 								new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble()), 
 								new Rotation (line.nextDouble(), line.nextDouble(), line.nextDouble())));
-					}
-					else 
-					{
+						break;
+					default:
 						input.close();
 						line.close();
 						throw new IllegalArgumentException ("Line does not contain a GameObject.");
@@ -160,10 +159,10 @@ public class Scene implements Serializable {
 				{
 					Polyhedron p = (Polyhedron) gameObject;
 					double d = p.getFarthest(Vec4.center).getFarthest(Vec4.center).magnitude();
-					double d1 = (Vec4.dot(Vec4.subtract(cam.getLookFrom(), p.transform.getPosition()).normalized(), 
+					double d1 = (Vec4.dot(Vec4.subtract(cam.getLookFrom(), p.getGlobalTransformedPosition()).normalized(), 
 							Vec4.subtract(cam.getLookFrom(), cam.getLookAt()).normalized()) > 0)
-							? Vec4.subtract(cam.getLookFrom(), p.transform.getPosition()).magnitude()
-								: -Vec4.subtract(cam.getLookFrom(), p.transform.getPosition()).magnitude();
+							? Vec4.subtract(cam.getLookFrom(), p.getGlobalTransformedPosition()).magnitude()
+								: -Vec4.subtract(cam.getLookFrom(), p.getGlobalTransformedPosition()).magnitude();
 					Vec4 v = Vec4.add(Vec4.multiply(Vec4.subtract(cam.getLookAt(), cam.getLookFrom()), d + d1), cam.getLookFrom());
 					if (Vec4.dot(Vec4.subtract(cam.getLookFrom(), cam.getLookAt()), Vec4.subtract(cam.getLookFrom(), v)) > 0) 
 						tmp.add(p);
@@ -186,17 +185,20 @@ public class Scene implements Serializable {
 			g.drawString(1000000000/(end - start)+ "fps", width + 2*shiftX - 70, 30);
 			g.drawString(width + " X " + height, width > 1000 ? width-100+2*shiftX : width-75+2*shiftX, 15);
 			g.drawString("Camera:", 5, 15);
-			g.drawString("Position: " + cam.getTransform().getPosition().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 30);
-			g.drawString("Rotation: " + cam.getTransform().getRotation().asString("%1$.2f, %2$.2f, %3$.2f"), 5, 45);
+			g.drawString("Position: " + cam.getGlobalPosition().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 30);
+			g.drawString("Rotation: " + cam.getGlobalRotation().asString("%1$.2f, %2$.2f, %3$.2f"), 5, 45);
 			g.drawString("LookFrom: " + cam.getLookFrom().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 60);
 			g.drawString("LookAt: " + cam.getLookAt().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 75);
 			g.drawString("LookUp: " + cam.getLookUp().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 90);
 			for (int a = 0; a < scene.size(); a++) 
 			{
 				g.drawString("Object " + a + ": " + scene.get(a).getClass().getName().replaceAll("java3dpipeline.", ""), 5, (a+1)*70+45);
-				g.drawString("Position: " + scene.get(a).getTransform().getPosition().asString("%1$.2f, %2$.2f, %3$.2f, %4$.0f"), 5, (a+1)*70+60);
-				g.drawString("Rotation: " + scene.get(a).getTransform().getRotation().asString("%1$.2f, %2$.2f, %3$.2f"), 5, (a+1)*70+75);
-				g.drawString("Scale: " + scene.get(a).getTransform().getScale().asString("%1$.2f, %2$.2f, %3$.2f"), 5, (a+1)*70+90);
+				g.drawString("Position: (local) " + scene.get(a).getLocalTransform().getLocalPosition().asString("%1$.2f, %2$.2f, %3$.2f") + 
+				" (global) " + scene.get(a).getGlobalPosition().asString("%1$.2f, %2$.2f, %3$.2f"), 5, (a+1)*70+60);
+				g.drawString("Rotation: (local) " + scene.get(a).getLocalTransform().getLocalRotation().asString("%1$.2f, %2$.2f, %3$.2f") +
+						" (global) " + scene.get(a).getGlobalRotation().asString("%1$.2f, %2$.2f, %3$.2f"), 5, (a+1)*70+75);
+				g.drawString("Scale: (local) " + scene.get(a).getLocalTransform().getLocalScale().asString("%1$.2f, %2$.2f, %3$.2f") + 
+						" (global) " + scene.get(a).getGlobalScale().asString("%1$.2f, %2$.2f, %3$.2f"), 5, (a+1)*70+90);
 			}
 		}
 	}
