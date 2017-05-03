@@ -29,6 +29,27 @@ public class Transformation implements Serializable {
 	{
 		X = Y = Z = 0;
 	}
+	/** Adds two Transformations.
+	 * @param t1 Transformation #1.
+	 * @param t2 Transformation #2*/
+	public static Transformation add (Transformation t1, Transformation t2) 
+	{
+		return new Transformation (t1.X + t2.X, t1.Y + t2.Y, t1.Z + t2.Z);
+	}
+	/** Subtract two Transformations.
+	 * @param t1 Transformation #1.
+	 * @param t2 Transformation #2*/
+	public static Transformation subtract (Transformation t1, Transformation t2) 
+	{
+		return new Transformation (t1.X - t2.X, t1.Y - t2.Y, t1.Z - t2.Z);
+	}
+	/** Multiplies two Transformations.
+	 * @param t1 Transformation #1.
+	 * @param t2 Transformation #2*/
+	public static Transformation multiply (Transformation t1, Transformation t2) 
+	{
+		return new Transformation (t1.X * t2.X, t1.Y * t2.Y, t1.Z * t2.Z);
+	}
 	/** Returns the X value of the Transformation.*/
 	public double getX () 
 	{

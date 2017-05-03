@@ -30,4 +30,25 @@ public class Scale extends Transformation implements Serializable {
 	{
 		return (X + Y + Z)/3;
 	}
+	/** Adds two Scales.
+	 * @param t1 Scale #1.
+	 * @param t2 Scale #2*/
+	public static Scale add (Scale t1, Scale t2) 
+	{
+		return new Scale (t1.X + t2.X, t1.Y + t2.Y, t1.Z + t2.Z);
+	}
+	/** Subtract two Scales.
+	 * @param t1 Scale #1.
+	 * @param t2 Scale #2*/
+	public static Scale subtract (Scale t1, Scale t2) 
+	{
+		return new Scale (t1.X - t2.X, t1.Y - t2.Y, t1.Z - t2.Z);
+	}
+	/** Multiplies two Scales.
+	 * @param t1 Scale #1.
+	 * @param t2 Scale #2*/
+	public static Scale multiply (Scale t1, Scale t2) 
+	{
+		return new Scale (t1.X * t2.X, t1.Y * t2.Y, t1.Z * t2.Z);
+	}
 }

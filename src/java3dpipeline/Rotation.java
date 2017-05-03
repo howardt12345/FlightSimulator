@@ -33,6 +33,27 @@ public class Rotation extends Transformation implements Serializable {
 	{
 		return Math.toRadians(Z);
 	}
+	/** Adds two Rotations.
+	 * @param t1 Rotation #1.
+	 * @param t2 Rotation #2*/
+	public static Rotation add (Rotation t1, Rotation t2) 
+	{
+		return new Rotation (t1.X + t2.X, t1.Y + t2.Y, t1.Z + t2.Z);
+	}
+	/** Subtract two Rotations.
+	 * @param t1 Rotation #1.
+	 * @param t2 Rotation #2*/
+	public static Rotation subtract (Rotation t1, Rotation t2) 
+	{
+		return new Rotation (t1.X - t2.X, t1.Y - t2.Y, t1.Z - t2.Z);
+	}
+	/** Multiplies two Rotations.
+	 * @param t1 Rotation #1.
+	 * @param t2 Rotation #2*/
+	public static Rotation multiply (Rotation t1, Rotation t2) 
+	{
+		return new Rotation (t1.X * t2.X, t1.Y * t2.Y, t1.Z * t2.Z);
+	}
 	/** @param zero Shorthand for writing Rotation (0,0,0)*/
 	public static Rotation zero = new Rotation (0, 0, 0);
 }
