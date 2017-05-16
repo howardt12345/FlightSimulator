@@ -1,4 +1,5 @@
-camera 0 2 -4 0 0 0 
+camera 0 6 -40 0 0 0
+ignore camera 0 32 0 90 0 0
 light 0 50 0 0 0 0 0.75 100
 ignore polyhedron -10 0 10 0 0 0 1 F15.txt true
 ignore polyhedron -10 0 30 0 0 0 1 F15.txt true

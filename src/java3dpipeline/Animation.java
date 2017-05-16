@@ -11,6 +11,7 @@ public class Animation extends SwingWorker <Integer, String> implements Serializ
 	private double loop = 1;
 	/** Whether or not the Animation loops infinitely.*/
 	private boolean loopInfinite = false;
+	private boolean remove = false;
 	/** The ArrayList of Transformations in this Animation.*/
 	private ArrayList<Transformation> transformations = new ArrayList<Transformation>();
 	/** The target of this Animation.*/
@@ -19,6 +20,7 @@ public class Animation extends SwingWorker <Integer, String> implements Serializ
 	private JFrame f;
 	/** The start time of the Animation.*/
 	private long startTime;
+	private Scene scene;
 	/** New Animation from a GameObject and a Transformation.
 	 * @param g the target of this Animation. 
 	 * @param t the Transformation.
@@ -49,6 +51,19 @@ public class Animation extends SwingWorker <Integer, String> implements Serializ
 		target = g;
 		transformations.add(t);
 		end = duration;
+	}
+	/** New Animation from a GameObject, a Transformation and a duration.
+	 * @param g the target of this Animation.
+	 * @param t the Transformation.
+	 * @param duration the duration.
+	 */
+	public Animation (GameObject g, Transformation t, double duration, Scene scene, boolean remove) 
+	{
+		target = g;
+		transformations.add(t);
+		end = duration;
+		this.scene = scene;
+		this.remove = remove;
 	}
 	/** New Animation from a GameObject, a Transformation, duration, and loop.
 	 * @param g the target of this Animation. 
@@ -155,7 +170,7 @@ public class Animation extends SwingWorker <Integer, String> implements Serializ
 	}
 	@Override 
 	/** Note that all transformations in Animation runs simultaneously. */
-	protected Integer doInBackground() throws Exception
+	public Integer doInBackground() throws Exception
 	{
 		while (loopInfinite || System.currentTimeMillis() < (startTime + (end*1000))) 
 		{
@@ -183,10 +198,17 @@ public class Animation extends SwingWorker <Integer, String> implements Serializ
 					}
 				}
 			}
+			f.repaint();
 			Thread.sleep(10);
 		}
-		if (System.currentTimeMillis() > startTime + (end*1000)) 
+		if (System.currentTimeMillis() > startTime + (end*1000))
+		{
+			if (remove)
+			{
+				scene.remove(scene.indexOf(target));
+			}
 			this.cancel(true);
+		}
 		return 1;
 	}
 	/** Gets whether or not the Animation loops infinitely.*/

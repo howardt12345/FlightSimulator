@@ -33,6 +33,14 @@ public class Rotation extends Transformation implements Serializable {
 	{
 		return Math.toRadians(Z);
 	}
+	public Rotation EulerXYZ ()
+	{
+		Matrix m = Matrix.multiply(Matrix.rotationX(this), Matrix.multiply(Matrix.rotationY(this), Matrix.rotationZ(this)));
+		double tmpX = Math.atan2(m.get(2, 1), m.get(2, 2)),
+				tmpY = Math.atan2(-m.get(2, 0), Math.sqrt(Math.pow(m.get(2, 1), 2)+Math.pow(m.get(2, 2), 2))),
+				tmpZ = Math.atan2(m.get(1, 0), m.get(0, 0));
+		return new Rotation (Math.toDegrees(tmpX), Math.toDegrees(tmpY), Math.toDegrees(tmpZ));
+	}
 	/** Adds two Rotations.
 	 * @param t1 Rotation #1.
 	 * @param t2 Rotation #2*/

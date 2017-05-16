@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 import java3dpipeline.*;
+import flightSimulator.*;
 
 import java.util.*;
 import java.awt.*;
@@ -16,12 +17,22 @@ public class Main extends JPanel implements ActionListener {
 	public static Scene scene;
 	public static JFrame f = new JFrame();
     public static double oldX, newX, oldY, newY;
-    public static double dx = 0, dy = 0, speed = 0.3;
-    static int tmp = 0;
-    static boolean wire = true, shade = true, debug = true, mouseDown = false;
-    static Timer t = new Timer (0, new Main ());
+    public static double dx = 0, dy = 0, sensitivity = 0.05;
+    static int tmp = 1;
+    static boolean wire = true, shade = true, debug = true, 
+    		mouseDown = false, keyDown = false,
+    		left = false, right = false, up = false, down = false;
+    static Timer t = new Timer (1, new Main ());
 	public static void main (String[] args) {
 		scene = new Scene ("scene.txt", true);
+		scene.getCamera().setParent(scene.get(1));
+		Plane plane = new Plane ((Polyhedron)scene.get(1), 
+				new Missile (new Transform (), "missile.txt", true, 500),
+				8, 100);
+		Vec4 v = new Vec4 (0, 0, 100, true);
+		Animator anim = new Animator (f);
+		anim.add(new Animation (scene.get(tmp), v, 6, true));
+		anim.play();
 		f.addKeyListener(new KeyListener () 
 		{
 			public void keyTyped(KeyEvent e) 
@@ -31,6 +42,7 @@ public class Main extends JPanel implements ActionListener {
 			}
 			public void keyPressed(KeyEvent e) 
 			{
+				keyDown = true;
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_BACK_SPACE: 
 					System.exit(0);
@@ -38,56 +50,45 @@ public class Main extends JPanel implements ActionListener {
 				case KeyEvent.VK_ENTER:
 					f.setExtendedState(JFrame.MAXIMIZED_BOTH);
 					break;
-				case (KeyEvent.VK_BACK_SLASH):
+				case KeyEvent.VK_SPACE:
+					plane.fire(scene, f);
+					break;
+				case KeyEvent.VK_BACK_SLASH:
 					scene.get(tmp).setActive(!scene.get(tmp).isActive());
 					break;
-				case KeyEvent.VK_W:
-					scene.getCamera().addTranslate(speed, Direction.Forward);
-					break;
-				case KeyEvent.VK_S:
-					scene.getCamera().addTranslate(speed, Direction.Backward);
-					break;
-				case KeyEvent.VK_A:
-					scene.getCamera().addTranslate(speed, Direction.Left);
-					break;
-				case KeyEvent.VK_D:
-					scene.getCamera().addTranslate(speed, Direction.Right);						
-					break;
-				case KeyEvent.VK_Q:
-					scene.getCamera().addTranslate(speed, Direction.Down);
-					break;
-				case KeyEvent.VK_E:
-					scene.getCamera().addTranslate(speed, Direction.Up);
+				case KeyEvent.VK_DELETE:
+					scene.remove(tmp);
 					break;
 				case KeyEvent.VK_R:
 					scene = new Scene ("scene.txt", true);
 					break;
 				case KeyEvent.VK_P:
-					scene.get(tmp).setParent(scene.getCamera());
+					scene.getCamera().setParent(scene.get(tmp));
 					break;
 				case KeyEvent.VK_N:
-					scene.get(tmp).setParent(null);
-					break;
-				case KeyEvent.VK_X:
-					Animator anim = new Animator (f);
-					anim.add(new Animation (scene.getCamera(), new Vec4 (0, 0, 500, true), 30));
-					anim.play();
+					scene.getCamera().setParent(null);
 					break;
 				case KeyEvent.VK_UP:
-					scene.get(tmp).addTranslate(0.5, Axis.Z);
-					scene.get(tmp).getLocalTransform().getLocalPosition().print();
+					/*scene.get(tmp).addTranslate(0.5, Axis.Z);
+					scene.get(tmp).getLocalTransform().getLocalPosition().print();*/
+					scene.get(tmp).addRotate(2, Axis.X);
 					break;
 				case KeyEvent.VK_DOWN:
-					scene.get(tmp).addTranslate(-0.5, Axis.Z);
-					scene.get(tmp).getLocalTransform().getLocalPosition().print();
+					/*scene.get(tmp).addTranslate(-0.5, Axis.Z);
+					scene.get(tmp).getLocalTransform().getLocalPosition().print();*/
+					scene.get(tmp).addRotate(-2, Axis.X);
 					break;
 				case KeyEvent.VK_LEFT:
-					scene.get(tmp).addTranslate(-0.5, Axis.X);
-					scene.get(tmp).getLocalTransform().getLocalPosition().print();
+					/*scene.get(tmp).addTranslate(-0.5, Axis.X);
+					scene.get(tmp).getLocalTransform().getLocalPosition().print();*/
+					scene.get(tmp).addRotate(-2, Axis.Y);
+					scene.get(tmp).addRotate(2, Axis.Z);
 					break;
 				case KeyEvent.VK_RIGHT:
-					scene.get(tmp).addTranslate(0.5, Axis.X);
-					scene.get(tmp).getLocalTransform().getLocalPosition().print();
+					/*scene.get(tmp).addTranslate(0.5, Axis.X);
+					scene.get(tmp).getLocalTransform().getLocalPosition().print();*/
+					scene.get(tmp).addRotate(2, Axis.Y);
+					scene.get(tmp).addRotate(-2, Axis.Z);
 					break;
 				case KeyEvent.VK_COMMA:
 					scene.get(tmp).addTranslate(-0.5, Axis.Y);
@@ -113,6 +114,18 @@ public class Main extends JPanel implements ActionListener {
 					scene.get(tmp).addRotate(-1, Axis.X);
 					scene.get(tmp).getLocalTransform().getLocalRotation().print();
 					break;
+				case KeyEvent.VK_MINUS:
+					/*scene.get(tmp).addRotate(1, Axis.Z);
+					scene.get(tmp).getLocalTransform().getLocalRotation().print();*/
+					v.setZ(v.getZ() - 1);
+					System.out.println(v.getZ());
+					break;
+				case KeyEvent.VK_EQUALS:
+					/*scene.get(tmp).addRotate(-1, Axis.Z);
+					scene.get(tmp).getLocalTransform().getLocalRotation().print();*/
+					v.setZ(v.getZ() + 1);
+					System.out.println(v.getZ());
+					break;
 				case KeyEvent.VK_SLASH:
 					wire = !wire;
 					break;
@@ -121,12 +134,6 @@ public class Main extends JPanel implements ActionListener {
 					break;
 				case KeyEvent.VK_CONTROL:
 					debug = !debug;
-					break;
-				case KeyEvent.VK_MINUS:
-					scene.getCamera().addRotate(1, Axis.Z);
-					break;
-				case KeyEvent.VK_EQUALS:
-					scene.getCamera().addRotate(-1, Axis.Z);
 					break;
 				case KeyEvent.VK_7:
 					scene.getCamera().addRotate(1, Axis.X);
@@ -140,28 +147,20 @@ public class Main extends JPanel implements ActionListener {
 				case KeyEvent.VK_0:
 					scene.getCamera().addRotate(1, Axis.Y);
 					break;
-				case KeyEvent.VK_SPACE:
-					Animator animator = new Animator (f);
-					animator.add(new Animation (scene.get(tmp), new Rotation (0, 0, 360), 2));
-					animator.add(new Animation (scene.get(tmp), new Rotation (0, 0, -360), 2, 4, 1));
-					animator.add(new Animation (scene.get(tmp), new Rotation (-360, 0, 0), 4, 6, 1));
-					animator.add(new Animation (scene.get(tmp), new Rotation (360, 0, 0), 6, 8, 1));
-					animator.play();
-					break;
 				}
 				System.out.println(e.getKeyChar());
 				f.repaint();
 			}
 			public void keyReleased(KeyEvent e) 
 			{
+				keyDown = false;
 			}
 		});
 		f.addMouseWheelListener(new MouseWheelListener() 
 		{
 			public void mouseWheelMoved(MouseWheelEvent e) 
 			{
-				scene.getCamera().setFOV(scene.getCamera().getFOV()+e.getWheelRotation());
-				System.out.println(scene.getCamera().getFOV());
+				v.setZ(v.getZ() - e.getWheelRotation());
 				f.repaint();
 			}
 		});
@@ -173,27 +172,8 @@ public class Main extends JPanel implements ActionListener {
 				oldY = newY;
 				newX = e.getX();
 				newY = e.getY();
-				dx = (newX - oldX)*0.1;
-				dy = (newY - oldY)*0.1;
-				if (SwingUtilities.isMiddleMouseButton(e)) {
-					scene.getCamera().addTranslate(dx*speed, Direction.Left);
-					scene.getCamera().addTranslate(dy*speed, Direction.Up);
-				}
-				else if (SwingUtilities.isRightMouseButton(e) && e.isAltDown()) {
-					scene.getCamera().addTranslate(dx*speed + dy*speed, Direction.Forward);
-				}
-				else if (e.isAltDown()) {
-					scene.getCamera().addTranslate(dx*speed, Direction.Left);
-					scene.getCamera().addTranslate(dy*speed, Direction.Up);
-					scene.getCamera().addRotate(dy, Axis.X);
-					scene.getCamera().addRotate(dx, Axis.Y);
-				}
-				else {
-					scene.getCamera().addRotate(-dy*0.5, Axis.X);
-					scene.getCamera().addRotate(dx*0.5, Axis.Y);
-					scene.get(tmp).addRotate(-dx, Axis.Z);
-					scene.get(tmp).addRotate(-dy, Axis.X);
-				}
+				dx = (newX - oldX)*sensitivity;
+				dy = (newY - oldY)*sensitivity;
 				f.repaint();
 			}
 			public void mouseMoved(MouseEvent e) 
@@ -207,6 +187,8 @@ public class Main extends JPanel implements ActionListener {
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
+				if (SwingUtilities.isMiddleMouseButton(e))
+					dx = dy = 0;
 			}
 			@Override
 			public void mousePressed(MouseEvent e)
@@ -239,29 +221,36 @@ public class Main extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
-		if (!mouseDown)
-		{
-			if (Math.rint(scene.get(tmp).getLocalTransform().getRotZ()) < 1 &&
-					Math.rint(scene.get(tmp).getLocalTransform().getRotZ()) > -1) {
+		scene.get(tmp).addRotate(-dy, Axis.X);
+		scene.get(tmp).addRotate(dx, Axis.Y);
+		scene.get(tmp).addRotate(-dx, Axis.Z);
+		if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) < -85)
+			scene.get(tmp).setRotate(-84, Axis.Z);
+		if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) > 85)
+			scene.get(tmp).setRotate(84, Axis.Z);
+		//if (!mouseDown) {
+			if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) < 4 &&
+					Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) > -4) {
 				scene.get(tmp).setRotate(0, Axis.Z);
 			}
-			if (Math.rint(scene.get(tmp).getLocalTransform().getRotZ()) > 1 ||
-					Math.rint(scene.get(tmp).getLocalTransform().getRotZ()) < -1) {
-				if (Math.rint(scene.get(tmp).getLocalTransform().getRotZ()) > 0) 
-					scene.get(tmp).addRotate(-2, Axis.Z);
-				else scene.get(tmp).addRotate(2, Axis.Z);
+			if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) > 4 ||
+					Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) < -4) {
+				if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ()) > 0)
+					scene.get(tmp).addRotate(-4, Axis.Z); 
+				else 
+					scene.get(tmp).addRotate(4, Axis.Z);
 			}
-			if (Math.rint(scene.get(tmp).getLocalTransform().getRotX()) < 1 &&
-					Math.rint(scene.get(tmp).getLocalTransform().getRotX()) > -1) {
-				scene.get(tmp).setRotate(0, Axis.X);
-			}
-			if (Math.rint(scene.get(tmp).getLocalTransform().getRotX()) > 1 ||
-					Math.rint(scene.get(tmp).getLocalTransform().getRotX()) < -1) {
-				if (Math.rint(scene.get(tmp).getLocalTransform().getRotX()) > 0) 
-					scene.get(tmp).addRotate(-2, Axis.X);
-				else scene.get(tmp).addRotate(2, Axis.X);
-			}
+		//}
+		/*if (Math.rint (scene.get(tmp).getLocalTransform().getLocalRotation().getX()) < 4 &&
+				Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getX()) > -4) {
+			scene.get(tmp).setRotate(0, Axis.X);
 		}
+		if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getX()) > 1 ||
+				Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getX()) < -1) {
+			if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getX()) > 0) 
+				scene.get(tmp).addRotate(-4, Axis.X);
+			else scene.get(tmp).addRotate(4, Axis.X);
+		}*/
 		f.repaint();
 	}
 }

@@ -12,6 +12,8 @@ public class Camera extends GameObject implements Serializable {
 	private Vec4 lookUp = new Vec4 (0, 1, 0, 1);
 	/** Internal values of the Camera.*/
 	private double nearClip = 0.1, farClip = 0.9, FOV = 60;
+	/** lookAtMatrix to be used in calculations.*/
+	private Matrix lookAtMatrix;
 	/** Creaes a new Camera from a Transform, near clip value, far clip value, 
 	 * FOV (Field of View) value, and aspect ratio value.
 	 * @param t the Transform.
@@ -26,6 +28,7 @@ public class Camera extends GameObject implements Serializable {
 		this.nearClip = nearClip;
 		this.farClip = farClip;
 		this.FOV = FOV;
+		lookAtMatrix = lookAtMatrix();
 	}
 	/** Creates a new Camera from a near clip value, far clip value, 
 	 * FOV (Field of View) value, and aspect ratio value.
@@ -40,6 +43,7 @@ public class Camera extends GameObject implements Serializable {
 		this.nearClip = nearClip;
 		this.farClip = farClip;
 		this.FOV = FOV;
+		lookAtMatrix = lookAtMatrix();
 	}
 	/** Creates a new Camera from a Transform/
 	 * @param t the Transform.
@@ -50,16 +54,15 @@ public class Camera extends GameObject implements Serializable {
 		this.lookFrom = t.getLocalPosition();
 		lookAt = Vec4.Transform(new Vec4 (0, 0, 1), new Matrix (t));
 		lookUp = Vec4.Transform(new Vec4 (0, 1, 0), new Matrix (t.getLocalRotation()));
+		lookAtMatrix = lookAtMatrix();
 	}
 	/** Creates a new Camera.*/
 	public Camera () 
 	{
 		super (new Transform());
+		lookAtMatrix = lookAtMatrix();
 	}
-	/** The lookAt Matrix.
-	 * @return the lookAt Matrix.
-	 */
-	public Matrix LookAtMatrix () 
+	private Matrix lookAtMatrix ()
 	{
 		Vec4 Vz = Vec4.subtract (lookFrom, lookAt).normalized(),
 				Vx = Vec4.cross(lookUp, Vz).normalized(),
@@ -83,14 +86,21 @@ public class Camera extends GameObject implements Serializable {
 		viewMatrix.set(-Vec4.dot(lookFrom, Vy), 1, 3);
 		viewMatrix.set(-Vec4.dot(lookFrom, Vz), 2, 3);
 		
-		return viewMatrix;
+		return viewMatrix;	
+	}
+	/** The lookAt Matrix.
+	 * @return the lookAt Matrix.
+	 */
+	public Matrix getLookAtMatrix () 
+	{
+		return lookAtMatrix;
 	}
 	/** The Camera Perspective projection Matrix.
 	 * @param width the width.
 	 * @param height the height.
 	 * @return the projection matrix.
 	 */
-    public Matrix perspectiveMatrix (double width, double height) 
+    public Matrix getPerspectiveMatrix (double width, double height) 
     {
         Matrix projectionMatrix = new Matrix ();
            
@@ -114,13 +124,14 @@ public class Camera extends GameObject implements Serializable {
 		Transform ();
 	}
 	/** Transforms the Camera by the Transform.*/
-	private void Transform () 
+	protected void Transform () 
 	{
-		lookFrom = Vec4.Transform(new Vec4 (0, 0, 0), new Matrix (getGlobalTransform()));
-		lookAt = Vec4.Transform(new Vec4 (0, 0, 1), Matrix.multiply(new Matrix (getGlobalTransformedPosition()), new Matrix (new Rotation (getGlobalRotation().getX(), getGlobalRotation().getY(), 0))));
-		lookUp = Vec4.cross(Vec4.subtract(lookAt, lookFrom), Vec4.Transform(new Vec4 (1, 0, 0), Matrix.rotationXYZ(new Rotation (0, getGlobalRotation().getY(), getGlobalRotation().getZ()))));
-		//lookAt = Vec4.Transform(new Vec4 (0, 0, 1), new Matrix (transform));
-		//lookUp = Vec4.Transform(new Vec4 (0, 1, 0), new Matrix (transform.getRotation()));
+		lookFrom = Vec4.Transform(new Vec4 (0, 0, 0), getGlobalTransformationMatrix());
+		//lookAt = Vec4.Transform(new Vec4 (0, 0, 1), Matrix.multiply(new Matrix (getGlobalTransformedPosition()), new Matrix (new Rotation (getGlobalRotation().getX(), getGlobalRotation().getY(), 0))));
+		//lookUp = Vec4.cross(Vec4.subtract(lookAt, lookFrom), Vec4.Transform(new Vec4 (1, 0, 0), Matrix.rotationXYZ(new Rotation (0, getGlobalRotation().getY(), getGlobalRotation().getZ()))));
+		lookAt = Vec4.Transform(new Vec4 (0, 0, 1), getGlobalTransformationMatrix());
+		lookUp = Vec4.Transform(new Vec4 (0, 1, 0), new Matrix (Rotation.multiply(getGlobalRotation(), new Rotation (-1, -1, -1))));
+		lookAtMatrix = lookAtMatrix();
 	}
 	/** Checks whether or not the Polygon is visible to the Camera.
 	 * @param p the Polygon.

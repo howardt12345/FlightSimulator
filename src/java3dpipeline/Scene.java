@@ -80,7 +80,8 @@ public class Scene implements Serializable {
 				}
 				else 
 				{
-					switch (next) {
+					switch (next) 
+					{
 					case "light":
 						Light l = new Light (new Transform (
 								new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble()), 
@@ -159,20 +160,23 @@ public class Scene implements Serializable {
 				{
 					Polyhedron p = (Polyhedron) gameObject;
 					double d = p.getFarthest(Vec4.center).getFarthest(Vec4.center).magnitude();
-					double d1 = (Vec4.dot(Vec4.subtract(cam.getLookFrom(), p.getGlobalTransformedPosition()).normalized(), 
+					double d1 = (Vec4.dot(Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).normalized(), 
 							Vec4.subtract(cam.getLookFrom(), cam.getLookAt()).normalized()) > 0)
-							? Vec4.subtract(cam.getLookFrom(), p.getGlobalTransformedPosition()).magnitude()
-								: -Vec4.subtract(cam.getLookFrom(), p.getGlobalTransformedPosition()).magnitude();
+							? Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).magnitude()
+								: -Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).magnitude();
 					Vec4 v = Vec4.add(Vec4.multiply(Vec4.subtract(cam.getLookAt(), cam.getLookFrom()), d + d1), cam.getLookFrom());
-					if (Vec4.dot(Vec4.subtract(cam.getLookFrom(), cam.getLookAt()), Vec4.subtract(cam.getLookFrom(), v)) > 0) 
+					if (Vec4.dot(Vec4.subtract(cam.getLookFrom(), cam.getLookAt()), Vec4.subtract(cam.getGlobalTransformedPosition(), v)) > 0) 
 						tmp.add(p);
 				}
 			}
 		}
-		for (Polyhedron p : Utils.zSort(tmp, cam)) 
+		cam.Transform();
+		tmp = Utils.zSort(tmp, cam);
+		for (Polyhedron p : tmp) 
 		{
 			ctr += p.paint(g, cam, lights, width, height, shiftX, shiftY, wire, shade);
 		}
+		System.gc();
 		end = System.nanoTime();
 		if (debug) 
 		{
@@ -185,11 +189,12 @@ public class Scene implements Serializable {
 			g.drawString(1000000000/(end - start)+ "fps", width + 2*shiftX - 70, 30);
 			g.drawString(width + " X " + height, width > 1000 ? width-100+2*shiftX : width-75+2*shiftX, 15);
 			g.drawString("Camera:", 5, 15);
-			g.drawString("Position: " + cam.getGlobalPosition().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 30);
+			g.drawString("Position: (local) " + cam.getLocalTransform().getLocalPosition().asString("%1$.2f, %2$.2f, %3$.2f") + 
+					" (global) " + cam.getGlobalPosition().asString("%1$.2f, %2$.2f, %3$.2f"), 5, 30);
 			g.drawString("Rotation: " + cam.getGlobalRotation().asString("%1$.2f, %2$.2f, %3$.2f"), 5, 45);
-			g.drawString("LookFrom: " + cam.getLookFrom().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 60);
-			g.drawString("LookAt: " + cam.getLookAt().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 75);
-			g.drawString("LookUp: " + cam.getLookUp().asString("%1$.5f, %2$.5f, %3$.5f, %4$.0f"), 5, 90);
+			g.drawString("LookFrom: " + cam.getLookFrom().asString("%1$.5f, %2$.5f, %3$.5f"), 5, 60);
+			g.drawString("LookAt: " + cam.getLookAt().asString("%1$.5f, %2$.5f, %3$.5f"), 5, 75);
+			g.drawString("LookUp: " + cam.getLookUp().asString("%1$.5f, %2$.5f, %3$.5f"), 5, 90);
 			for (int a = 0; a < scene.size(); a++) 
 			{
 				g.drawString("Object " + a + ": " + scene.get(a).getClass().getName().replaceAll("java3dpipeline.", ""), 5, (a+1)*70+45);
@@ -247,6 +252,10 @@ public class Scene implements Serializable {
 	{
 		scene.remove(Utils.isNumeric (""+index) ? (Integer.parseInt(""+index) < 0 || Integer.parseInt(""+index) >= scene.size()
 				? 0 : Integer.parseInt(""+index)) : 0);
+	}
+	public int indexOf (Object o)
+	{
+		return scene.indexOf(o);
 	}
 	/** Removes the gameObject located at the index.
 	 * @param index the index.

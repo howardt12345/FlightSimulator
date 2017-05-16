@@ -33,6 +33,11 @@ public class Animator implements Serializable {
 		for (Animation a : anim) 
 		{
 			a.play(f);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	/** Adds an Animation to the Animator.

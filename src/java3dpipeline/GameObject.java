@@ -26,19 +26,22 @@ public class GameObject implements Serializable {
 	{
 		transform = new Transform ();
 	}
-	/** Gets the Transform of the gameObject.
-	 * @return the transform
+	/** Gets the local Transform of the gameObject.
+	 * @return the local transform.
 	 */
 	public Transform getLocalTransform () 
 	{
 		return transform;
 	}
+	/** Gets the global Transform of the GameObject.
+	 * @return the global transform.
+	 */
 	public Transform getGlobalTransform ()
 	{
 		return new Transform (getGlobalTransformedPosition(), getGlobalRotation(), getGlobalScale());
 	}
 	/** Sets the Transform of the gameObject.
-	 * @param transform the transform to set
+	 * @param transform the transform to set.
 	 */
 	public void setTransform (Transform transform) 
 	{
@@ -70,14 +73,15 @@ public class GameObject implements Serializable {
 	 * transform by the parents of the GameObject.*/
 	public Vec4 getGlobalPosition ()
 	{
-		Vec4 v = transform.getLocalPosition();
+		/*Vec4 v = transform.getLocalPosition();
 		GameObject tmp = parent;
 		while (tmp != null)
 		{
-			v = Vec4.subtract(v, tmp.getLocalTransform().getLocalPosition());
+			v = Vec4.add(tmp.getLocalTransform().getLocalPosition(), v);
 			tmp = tmp.parent;
 		}
-		return v;
+		return v;*/
+		return Vec4.Transform(Vec4.center, getGlobalTransformationMatrix());
 	}
 	/** Gets the global position of this GameObject through transforming
 	 * by the global transformation matrix.*/
@@ -92,7 +96,7 @@ public class GameObject implements Serializable {
 		GameObject tmp = parent;
 		while (tmp != null)
 		{
-			r = Rotation.subtract(tmp.getLocalTransform().getLocalRotation(), r);
+			r = Rotation.subtract(Rotation.multiply(tmp.getLocalTransform().getLocalRotation(), new Rotation (-1, -1, -1)), r);
 			tmp = tmp.parent;
 		}
 		return r;
@@ -194,22 +198,40 @@ public class GameObject implements Serializable {
 		switch (dir) 
 		{
 		case Forward:
-			transform.setPosZ(transform.getPosZ()+amount);
+			getLocalTransform().setPosX(getLocalTransform().getPosX()+(Math.sin(getLocalTransform().getLocalRotation().getRadianY()) * 
+							Math.cos(getLocalTransform().getLocalRotation().getRadianX()) * amount));
+			getLocalTransform().setPosY(getLocalTransform().getPosY()+(-Math.sin(getLocalTransform().getLocalRotation().getRadianX()) * amount));
+			getLocalTransform().setPosZ(getLocalTransform().getPosZ()+(Math.cos(getLocalTransform().getLocalRotation().getRadianY())
+					* Math.cos(getLocalTransform().getLocalRotation().getRadianX()) * amount));
 			break;
 		case Backward:
-			transform.setPosZ(transform.getPosZ()-amount);
+			getLocalTransform().setPosX(getLocalTransform().getPosX()-(Math.sin(getLocalTransform().getLocalRotation().getRadianY()) * 
+					Math.cos(getLocalTransform().getLocalRotation().getRadianX()) * amount));
+			getLocalTransform().setPosY(getLocalTransform().getPosY()-(-Math.sin(getLocalTransform().getLocalRotation().getRadianX()) * amount));
+			getLocalTransform().setPosZ(getLocalTransform().getPosZ()-(Math.cos(getLocalTransform().getLocalRotation().getRadianY())
+					* Math.cos(getLocalTransform().getLocalRotation().getRadianX()) * amount));			
 			break;
 		case Left:
-			transform.setPosX(transform.getPosX()-amount);
+			getLocalTransform().setPosX(getLocalTransform().getPosX()-Math.cos(getLocalTransform().getLocalRotation().getRadianY()) * amount);
+			getLocalTransform().setPosZ(getLocalTransform().getPosZ()+Math.sin(getLocalTransform().getLocalRotation().getRadianY()) * amount);
 			break;
 		case Right:
-			transform.setPosX(transform.getPosX()+amount);
+			getLocalTransform().setPosX(getLocalTransform().getPosX()+Math.cos(getLocalTransform().getLocalRotation().getRadianY()) * amount);
+			getLocalTransform().setPosZ(getLocalTransform().getPosZ()-Math.sin(getLocalTransform().getLocalRotation().getRadianY()) * amount);
 			break;
 		case Up:
-			transform.setPosY(transform.getPosY()-amount);
+			getLocalTransform().setPosX(getLocalTransform().getPosX()+Math.sin(getLocalTransform().getLocalRotation().getRadianY())
+					* Math.sin(getLocalTransform().getLocalRotation().getRadianX()) * amount);
+			getLocalTransform().setPosY(getLocalTransform().getPosY()+Math.cos(getLocalTransform().getLocalRotation().getRadianX()) * amount);
+			getLocalTransform().setPosZ(getLocalTransform().getPosZ()+Math.cos(getLocalTransform().getLocalRotation().getRadianY())
+					* Math.sin(getLocalTransform().getLocalRotation().getRadianX()) * amount);
 			break;
 		case Down:
-			transform.setPosY(transform.getPosY()+amount);
+			getLocalTransform().setPosX(getLocalTransform().getPosX()-Math.sin(getLocalTransform().getLocalRotation().getRadianY())
+					* Math.sin(getLocalTransform().getLocalRotation().getRadianX()) * amount);
+			getLocalTransform().setPosY(getLocalTransform().getPosY()-Math.cos(getLocalTransform().getLocalRotation().getRadianX()) * amount);
+			getLocalTransform().setPosZ(getLocalTransform().getPosZ()-Math.cos(getLocalTransform().getLocalRotation().getRadianY())
+					* Math.sin(getLocalTransform().getLocalRotation().getRadianX()) * amount);
 			break;
 		}
 	}
@@ -353,5 +375,6 @@ public class GameObject implements Serializable {
 	public void setParent (GameObject g)
 	{
 		parent = g;
+		//transform = new Transform (getGlobalPosition(), getGlobalRotation(), getGlobalScale());
 	}
 }
