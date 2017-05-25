@@ -14,12 +14,15 @@ public class GameObject implements Serializable {
 	/** Whether or not the Polyhedron is active.
 	 * @param active the boolean.*/
 	private boolean active = true;
+	/** Whether or not the object will be culled.*/
+	private boolean cull = true;
 	/** New gameObject from a Transform.
 	 * @param t the Transform.
 	 */
-	public GameObject (Transform t) 
+	public GameObject (Transform t, boolean cull) 
 	{
 		transform = t;
+		this.setCull(cull);
 	}
 	/** new gameObject.*/
 	public GameObject () 
@@ -376,5 +379,19 @@ public class GameObject implements Serializable {
 	{
 		parent = g;
 		//transform = new Transform (getGlobalPosition(), getGlobalRotation(), getGlobalScale());
+	}
+	/** Returns whether or not the gameObject will be culled.
+	 * @return the cull
+	 */
+	public boolean isCulled() 
+	{
+		return cull;
+	}
+	/** Sets whether or not hte gameObject will be culled.
+	 * @param cull the cull to set
+	 */
+	public void setCull(boolean cull) 
+	{
+		this.cull = cull;
 	}
 }

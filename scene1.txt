@@ -1,0 +1,21 @@
+camera 0 6 -40 0 0 0
+ignore camera 0 32 0 90 0 0
+ignore polyhedron -10 0 10 0 0 0 1 F15.txt true true
+ignore polyhedron -10 0 30 0 0 0 1 F15.txt true true
+ignore polyhedron -10 0 50 0 0 0 1 F15.txt true true
+polyhedron 0 0 10 0 0 0 1 F16.txt true true
+ignore polyhedron 0 0 30 0 0 0 1 F16.txt true true
+ignore polyhedron 0 0 50 0 0 0 1 F16.txt true true
+ignore polyhedron 10 0 10 0 0 0 1 T50.txt true true
+ignore polyhedron 10 0 30 0 0 0 1 T50.txt true true
+ignore polyhedron 10 0 50 0 0 0 1 T50.txt true true
+ignore polyhedron -20 0 10 0 0 0 1 MK4.txt true true
+ignore polyhedron -20 0 30 0 0 0 1 MK4.txt true true
+ignore polyhedron -20 0 50 0 0 0 1 MK4.txt true true
+ignore polyhedron 20 0 10 0 0 0 1 missile.txt true true
+ignore polyhedron 20 0 30 0 0 0 1 missile.txt true true
+ignore polyhedron 20 0 50 0 0 0 1 missile.txt true true
+ignore polyhedron 0 0 0 0 0 0 1 grid.txt true true
+ignore light point 0 50 0 0 0 0 0.75 100
+light directional 30 0 0 2
+polyhedron 750 -25 -750 0 0 0 5 3 5 terrain.txt true false

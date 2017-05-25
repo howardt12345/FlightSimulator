@@ -6,7 +6,7 @@ public class Missile extends Polyhedron {
 	
 	public Missile (Transform t, String filename, boolean active, int range)
 	{
-		super (t, filename, active);
+		super (t, filename, active, true);
 		this.range = range;
 	}
 	public int getRange ()

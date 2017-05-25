@@ -24,7 +24,7 @@ public class Camera extends GameObject implements Serializable {
 	 */
 	public Camera (Transform t, double nearClip, double farClip, double FOV) 
 	{
-		super (t);
+		super (t, false);
 		this.nearClip = nearClip;
 		this.farClip = farClip;
 		this.FOV = FOV;
@@ -39,7 +39,7 @@ public class Camera extends GameObject implements Serializable {
 	 */
 	public Camera (double nearClip, double farClip, double FOV, double aspectRatio) 
 	{
-		super (new Transform ());
+		super (new Transform (), false);
 		this.nearClip = nearClip;
 		this.farClip = farClip;
 		this.FOV = FOV;
@@ -50,7 +50,7 @@ public class Camera extends GameObject implements Serializable {
 	 */
 	public Camera (Transform t) 
 	{
-		super (t);
+		super (t, false);
 		this.lookFrom = t.getLocalPosition();
 		lookAt = Vec4.Transform(new Vec4 (0, 0, 1), new Matrix (t));
 		lookUp = Vec4.Transform(new Vec4 (0, 1, 0), new Matrix (t.getLocalRotation()));
@@ -59,7 +59,7 @@ public class Camera extends GameObject implements Serializable {
 	/** Creates a new Camera.*/
 	public Camera () 
 	{
-		super (new Transform());
+		super (new Transform(), false);
 		lookAtMatrix = lookAtMatrix();
 	}
 	private Matrix lookAtMatrix ()

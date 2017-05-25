@@ -66,7 +66,7 @@ public class Scene implements Serializable {
 				String next = line.next().toLowerCase();
 				if (next.equals("break"))
 					break;
-				if (next.equals("ignore")) 
+				if (next.equals("ignore") || next.contains("//")) 
 				{
 					try 
 					{
@@ -83,14 +83,26 @@ public class Scene implements Serializable {
 					switch (next) 
 					{
 					case "light":
-						Light l = new Light (new Transform (
-								new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble()), 
-								new Rotation (line.nextDouble(), line.nextDouble(), line.nextDouble())));
-						if (line.hasNextDouble()) 
-							l.setIntensity(line.nextDouble());
-						if (line.hasNextDouble()) 
-							l.setRange(line.nextDouble());
-						scene.add(l);
+						next = line.next().toLowerCase();
+						switch (next)
+						{
+						case "point":
+							Light_Point lp = new Light_Point (new Transform (
+									new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble()), 
+									new Rotation (line.nextDouble(), line.nextDouble(), line.nextDouble())));
+							if (line.hasNextDouble()) 
+								lp.setIntensity(line.nextDouble());
+							if (line.hasNextDouble()) 
+								lp.setRange(line.nextDouble());
+							scene.add(lp);
+							break;
+						case "directional":
+							Light_Directional ld = new Light_Directional (new Rotation (line.nextDouble(), line.nextDouble(), line.nextDouble()));
+							if (line.hasNextDouble()) 
+								ld.setIntensity(line.nextDouble());
+							scene.add(ld);
+							break;
+						}
 						break;
 					case "polyhedron":
 						Vec4 v = new Vec4 (line.nextDouble(), line.nextDouble(), line.nextDouble());
@@ -100,7 +112,7 @@ public class Scene implements Serializable {
 							s.setY(line.nextDouble());
 						if (line.hasNextDouble()) 
 							s.setZ(line.nextDouble());
-						scene.add(new Polyhedron (new Transform (v, r, s), line.next(), line.nextBoolean()));
+						scene.add(new Polyhedron (new Transform (v, r, s), line.next(), line.nextBoolean(), line.nextBoolean()));
 						break;
 					case "camera":
 						cam = new Camera (new Transform (
@@ -158,15 +170,18 @@ public class Scene implements Serializable {
 					lights.add((Light) gameObject);
 				else if (gameObject instanceof Polyhedron) 
 				{
-					Polyhedron p = (Polyhedron) gameObject;
-					double d = p.getFarthest(Vec4.center).getFarthest(Vec4.center).magnitude();
-					double d1 = (Vec4.dot(Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).normalized(), 
-							Vec4.subtract(cam.getLookFrom(), cam.getLookAt()).normalized()) > 0)
-							? Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).magnitude()
-								: -Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).magnitude();
-					Vec4 v = Vec4.add(Vec4.multiply(Vec4.subtract(cam.getLookAt(), cam.getLookFrom()), d + d1), cam.getLookFrom());
-					if (Vec4.dot(Vec4.subtract(cam.getLookFrom(), cam.getLookAt()), Vec4.subtract(cam.getGlobalTransformedPosition(), v)) > 0) 
-						tmp.add(p);
+					if (gameObject.isCulled()) {
+						Polyhedron p = (Polyhedron) gameObject;
+						double d = p.getFarthest(Vec4.center).getFarthest(Vec4.center).magnitude();
+						double d1 = (Vec4.dot(Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).normalized(), 
+								Vec4.subtract(cam.getLookFrom(), cam.getLookAt()).normalized()) > 0)
+								? Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).magnitude()
+									: -Vec4.subtract(cam.getGlobalTransformedPosition(), p.getGlobalTransformedPosition()).magnitude();
+						Vec4 v = Vec4.add(Vec4.multiply(Vec4.subtract(cam.getLookAt(), cam.getLookFrom()), d + d1), cam.getLookFrom());
+						if (Vec4.dot(Vec4.subtract(cam.getLookFrom(), cam.getLookAt()), Vec4.subtract(cam.getGlobalTransformedPosition(), v)) > 0) 
+							tmp.add(p);
+					}
+					else tmp.add((Polyhedron) gameObject);
 				}
 			}
 		}

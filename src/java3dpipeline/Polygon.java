@@ -145,7 +145,12 @@ public class Polygon implements Serializable {
 	{
 		float tmp = 0;
 		for(int a = 1; a <= lights.size(); a++) 
-			tmp += (lights.get(a-1).diffuse(this)/(a+1));
+		{
+			if (lights.get(a-1) instanceof Light_Point)
+				tmp += (((Light_Point) lights.get(a-1)).calculate(this)/(a+1));
+			else if (lights.get(a-1) instanceof Light_Directional)
+				tmp += (((Light_Directional) lights.get(a-1)).calculate(this)/(a+1));
+		}
 		setIntensity (tmp < 0 || tmp > 1 ? tmp <= 0 ? 0 : 1 : tmp);
 	}
 	/** Returns the number of vertices in polygon.*/

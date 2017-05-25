@@ -2,12 +2,12 @@ package java3dpipeline;
 import java.io.*;
 
 @SuppressWarnings("serial")
-/** The Light class, extends GameObject and implements Serializable.*/
-public class Light extends GameObject implements Serializable {
+/** The Light class, extends GameObject and implements Serializable.*/ 
+class Light extends GameObject implements Serializable {
 	/** The light intensity. Default value 1.*/
-	private double intensity = 1;
+	protected double intensity = 1;
 	/** The light range. Default value 10.*/
-	private double range = 10;
+	protected double range = 10;
 	/** New Light.*/
 	public Light () 
 	{
@@ -18,13 +18,22 @@ public class Light extends GameObject implements Serializable {
 	 */
 	public Light (Transform t) 
 	{
-		super (t);
+		super (t, true);
 	}
 	/** New Light from intensity.
 	 * @param intensity the intensity.
 	 */
 	public Light (double intensity) 
 	{
+		this.intensity = intensity;
+	}
+	/** New Light from Transform and intensity.
+	 * @param t the Transform.
+	 * @param intensity the intensity.
+	 */
+	public Light (Transform t, double intensity) 
+	{
+		super (t, true);
 		this.intensity = intensity;
 	}
 	/** New Light from intensity and range.
@@ -43,18 +52,9 @@ public class Light extends GameObject implements Serializable {
 	 */
 	public Light (Transform t, double intensity, double range) 
 	{
-		super (t);
+		super (t, true);
 		this.intensity = intensity;
 		this.range = range;
-	}
-	/** Calculates the diffuse reflection of the light on the Polygon.
-	 * @param p the Polygon.
-	 * @return the diffuse intensity.
-	 */
-	public double diffuse (Polygon p) 
-	{
-		return (range/Vec4.getDistance(getLocalTransform().getLocalPosition(), p.getCenter()))*intensity
-				*(Vec4.dot(Vec4.subtract(getLocalTransform().getLocalPosition(), p.getCenter()).normalized(), p.getNormal().normalized()));
 	}
 	/** Gets the light intensity.
 	 * @return the intensity.
