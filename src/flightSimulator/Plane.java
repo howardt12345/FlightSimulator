@@ -30,6 +30,9 @@ public class Plane {
 	{
 		if (System.currentTimeMillis() > (long) time+(reloadTime*1000) && missiles > 0)
 		{
+			for (GameObject g : scene.getScene())
+				if (g instanceof Missile)
+					scene.remove(scene.indexOf(g));
 			time = System.currentTimeMillis();
 			Missile missile = ((Missile) Utils.deepClone(this.missile));
 			missile.getLocalTransform().setPosition(spawnPoint.getGlobalPosition());

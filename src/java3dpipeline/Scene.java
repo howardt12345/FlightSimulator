@@ -284,6 +284,10 @@ public class Scene implements Serializable {
 	{
 		return cam;
 	}
+	public ArrayList<GameObject> getScene ()
+	{
+		return scene;
+	}
 	/** Gets the amount of GameObjects in scene.*/
 	public int size () 
 	{

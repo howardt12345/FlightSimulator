@@ -30,8 +30,7 @@ public class Main extends JPanel implements ActionListener {
 		scene = new Scene ("scene.txt", true);
 		scene.getCamera().setParent(scene.get(0));
 		plane = new Plane ((Polyhedron)scene.get(0), 
-				new Missile (new Transform (), "missile.txt", true, 500),
-				8, 100);
+				new Missile (new Transform (), "missile.txt", true, 500), 8, 100);
 		plane.move(f);
 		f.addKeyListener(new KeyListener () 
 		{
@@ -145,6 +144,7 @@ public class Main extends JPanel implements ActionListener {
 		int shiftX = 0, shiftY = 0;
 		scene.paint(g, f.getWidth(), f.getHeight(), shiftX, shiftY, wire, shade, debug);
 		g.drawString("Speed:" + plane.getSpeed(), f.getWidth() + 2*shiftX - 100, 45);
+		g.drawString("Missiles:" + plane.getMissiles(), f.getWidth() + 2*shiftX - 100, 60);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) 
@@ -189,10 +189,14 @@ public class Main extends JPanel implements ActionListener {
 		}
 		scene.get(1).addRotate(1, Axis.Y);
 		if (!keys[KeyEvent.VK_SHIFT] && !keys[KeyEvent.VK_CONTROL]) {
-			/*if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 < -85)
-				scene.get(tmp).setRotate(-84, Axis.Z);
+			if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 < -85)
+				if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 > -90)
+					scene.get(tmp).setRotate(-84, Axis.Z);
+				else scene.get(tmp).addRotate(8, Axis.Z);
 			if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 > 85)
-				scene.get(tmp).setRotate(84, Axis.Z);*/
+				if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 < 90)
+					scene.get(tmp).setRotate(84, Axis.Z);
+				else scene.get(tmp).addRotate(-8, Axis.Z);
 			if (Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 < 4 &&
 					Math.rint(scene.get(tmp).getLocalTransform().getLocalRotation().getZ())%360 > -4) {
 				scene.get(tmp).setRotate(0, Axis.Z);
