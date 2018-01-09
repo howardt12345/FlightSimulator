@@ -1,9 +1,7 @@
 package java3dpipeline;
-import java.io.*;
-
-@SuppressWarnings("serial")
 /** The Camera class, extends GameObject.*/
-public class Camera extends GameObject implements Serializable {
+@SuppressWarnings("serial")
+public class Camera extends GameObject {
 	/** The lookFrom Vec4.*/
 	private Vec4 lookFrom = Vec4.center;
 	/** The lookAt Vec4.*/
@@ -127,8 +125,6 @@ public class Camera extends GameObject implements Serializable {
 	protected void Transform () 
 	{
 		lookFrom = Vec4.Transform(new Vec4 (0, 0, 0), getGlobalTransformationMatrix());
-		//lookAt = Vec4.Transform(new Vec4 (0, 0, 1), Matrix.multiply(new Matrix (getGlobalTransformedPosition()), new Matrix (new Rotation (getGlobalRotation().getX(), getGlobalRotation().getY(), 0))));
-		//lookUp = Vec4.cross(Vec4.subtract(lookAt, lookFrom), Vec4.Transform(new Vec4 (1, 0, 0), Matrix.rotationXYZ(new Rotation (0, getGlobalRotation().getY(), getGlobalRotation().getZ()))));
 		lookAt = Vec4.Transform(new Vec4 (0, 0, 1), getGlobalTransformationMatrix());
 		lookUp = Vec4.Transform(new Vec4 (0, 1, 0), new Matrix (Rotation.multiply(getGlobalRotation(), new Rotation (-1, -1, -1))));
 		lookAtMatrix = lookAtMatrix();

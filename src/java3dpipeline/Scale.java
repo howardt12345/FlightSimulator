@@ -1,9 +1,8 @@
 package java3dpipeline;
-import java.io.*;
 
 @SuppressWarnings("serial")
-/** The Scale class, extends Transformation and implements Serializable.*/
-public class Scale extends Transformation implements Serializable {
+/** The Scale class, extends Transformation.*/
+public class Scale extends Transformation {
 	/** Creates a new Scale from 3 scale values.
 	 * @param x The scale along the X axis.
 	 * @param y The scale along the Y axis.
@@ -31,24 +30,24 @@ public class Scale extends Transformation implements Serializable {
 		return (X + Y + Z)/3;
 	}
 	/** Adds two Scales.
-	 * @param t1 Scale #1.
-	 * @param t2 Scale #2*/
-	public static Scale add (Scale t1, Scale t2) 
+	 * @param s1 Scale #1.
+	 * @param s2 Scale #2*/
+	public static Scale add (Scale s1, Scale s2) 
 	{
-		return new Scale (t1.X + t2.X, t1.Y + t2.Y, t1.Z + t2.Z);
+		return new Scale (s1.X + s2.X, s1.Y + s2.Y, s1.Z + s2.Z);
 	}
 	/** Subtract two Scales.
-	 * @param t1 Scale #1.
-	 * @param t2 Scale #2*/
-	public static Scale subtract (Scale t1, Scale t2) 
+	 * @param s1 Scale #1.
+	 * @param s2 Scale #2*/
+	public static Scale subtract (Scale s1, Scale s2) 
 	{
-		return new Scale (t1.X - t2.X, t1.Y - t2.Y, t1.Z - t2.Z);
+		return new Scale (s1.X - s2.X, s1.Y - s2.Y, s1.Z - s2.Z);
 	}
 	/** Multiplies two Scales.
-	 * @param t1 Scale #1.
-	 * @param t2 Scale #2*/
-	public static Scale multiply (Scale t1, Scale t2) 
+	 * @param s1 Scale #1.
+	 * @param s2 Scale #2*/
+	public static Scale multiply (Scale s1, Scale s2) 
 	{
-		return new Scale (t1.X * t2.X, t1.Y * t2.Y, t1.Z * t2.Z);
+		return new Scale (s1.X * s2.X, s1.Y * s2.Y, s1.Z * s2.Z);
 	}
 }

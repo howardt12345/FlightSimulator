@@ -1,9 +1,7 @@
 package java3dpipeline;
-import java.io.*;
-
+/** The Light class, extends GameObject.*/ 
 @SuppressWarnings("serial")
-/** The Light class, extends GameObject and implements Serializable.*/ 
-class Light extends GameObject implements Serializable {
+class Light extends GameObject {
 	/** The light intensity. Default value 1.*/
 	protected double intensity = 1;
 	/** The light range. Default value 10.*/

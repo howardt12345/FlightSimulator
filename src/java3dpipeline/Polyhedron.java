@@ -1,15 +1,18 @@
 package java3dpipeline;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-/** The Polyhedron Class, extends GameObject and implements Serializable.*/
-public class Polyhedron extends GameObject implements Serializable {
+/** The Polyhedron Class, extends GameObject.*/
+public class Polyhedron extends GameObject {
 	/** The Arraylist of Polygons in the Polyhedron.*/
 	private ArrayList<Polygon> object = new ArrayList<Polygon>();
 	/** The File name.*/
 	private String FileName;
+	/** The Color of the Polyhedron.*/
+	private Color color = Color.gray;
 	/** Creates a new Polyhedron with Transform, Scring filename, and Camera.
 	 * @param transform the Transform of the Polyhedron.
 	 * @param filename the file name.
@@ -22,6 +25,49 @@ public class Polyhedron extends GameObject implements Serializable {
 		super.setActive(active);
 		ReadFile(filename);
 		FileName = filename;
+	}
+	/** Creates a new Polyhedron with Transform, Scring filename, and Camera.
+	 * @param transform the Transform of the Polyhedron.
+	 * @param filename the file name.
+	 * @param active whether or not the Polyhedron is active.
+	 * @param cull whether or not this Polyhedron will be culled.
+	 * @param color the Color of this Polyhedron.
+	 */
+	public Polyhedron (Transform t, String filename, boolean active, boolean cull, Color color)
+	{
+		super (t, cull);
+		super.setActive(active);
+		ReadFile(filename);
+		FileName = filename;
+		this.color = color;
+	}
+	/** Creates a new Polyhedron with Transform, Scring filename, and Camera.
+	 * @param transform the Transform of the Polyhedron.
+	 * @param filename the file name.
+	 * @param active whether or not the Polyhedron is active.
+	 * @param cull whether or not this Polyhedron will be culled.
+	 * @param color the Color of this Polyhedron.
+	 */
+	public Polyhedron (Transform t, String filename, boolean active, boolean cull, String color)
+	{
+		super (t, cull);
+		super.setActive(active);
+		ReadFile(filename);
+		FileName = filename;
+		try {
+			Field f = Color.class.getField(color);
+			this.setColor((Color)f.get(null));
+		}
+		catch (Exception e1)
+		{
+			try {
+				this.color = Color.decode(color);
+			}
+			catch (Exception e2) {
+				e1.printStackTrace();
+				e2.printStackTrace();
+			}
+		}
 	}
 	/** Reads the file and loads values in ArrayList.
 	 * @param filename the filename.
@@ -105,7 +151,7 @@ public class Polyhedron extends GameObject implements Serializable {
 	{
 		Polyhedron P = Utils.polygonSort(Polyhedron.MVP (this, cam, lights, width, height));
 		for (Polygon p : P.object)
-			p.paint(g, width, height, shiftX, shiftY, wire, shade);
+			p.paint(g, width, height, shiftX, shiftY, wire, shade, color);
 		return P.object.size();
 	}
 	/** Prints the information on the Polyhedron.*/
@@ -166,5 +212,39 @@ public class Polyhedron extends GameObject implements Serializable {
 	public String getFileName ()
 	{
 		return FileName;
+	}
+	/** Gets the color of the Polyhedron.
+	 * @return the color
+	 */
+	public Color getColor() 
+	{
+		return color;
+	}
+	/** Sets the color of the Polyhedron.
+	 * @param color the color to set
+	 */
+	public void setColor(Color color) 
+	{
+		this.color = color;
+	}
+	/** Sets the color of the Polyhedron.
+	 * @param color the color to set
+	 */
+	public void setColor (String color)
+	{
+		try {
+			Field f = Color.class.getField(color);
+			this.setColor((Color)f.get(null));
+		}
+		catch (Exception e1)
+		{
+			try {
+				this.color = Color.decode(color);
+			}
+			catch (Exception e2) {
+				e1.printStackTrace();
+				e2.printStackTrace();
+			}
+		}
 	}
 }

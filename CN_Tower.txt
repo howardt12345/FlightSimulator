@@ -1,0 +1,14 @@
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_AtticRoof.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_AtticShroud.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_BaseRing.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_BaseSupports.txt true false
+add: polyhedron -800 0 -800 -90 90 0 4 CN_Tower/CN_Tower_Ground.txt true false #A5D6A7
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_LowerWindows.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_MainTri.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_MainBody.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_Roof.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_SpaceDeck.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_Spire.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_Tier.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_VerticalWindows.txt true false
+add: polyhedron 0 0 0 -90 90 0 10 CN_Tower/CN_Tower_Windows.txt true false

@@ -1,6 +1,7 @@
 package java3dpipeline;
 
 @SuppressWarnings("serial")
+/** The Light_Point class, extends Light.*/
 public class Light_Point extends Light {
 	/** New Light_Point.*/
 	public Light_Point () 

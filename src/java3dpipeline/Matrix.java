@@ -35,7 +35,7 @@ public class Matrix {
 		else if (t instanceof Rotation) 
 			RotateYXZ ((Rotation) t);
 		else if (t instanceof Scale) 
-			Scale ((Scale) t);
+			scale ((Scale) t);
 	}
 	/** New Matrix from rows and columns.
 	 * @param rows the number of rows.
@@ -84,40 +84,6 @@ public class Matrix {
 				set (a == b ? 1 : 0, a, b);
 		}
 	}
-	/** Matrix with all values at 0.*/
-	public static Matrix zero () 
-	{
-		Matrix m = new Matrix ();
-		for (int a = 0; a < m.getRow(); a++) {
-			for (int b = 0; b < m.getColumn(); b++) 
-				m.getMatrix()[a][b] = 0;
-		}
-		return m;
-	}
-	/** Matrix with all values at 0 from rows and columns.
-	 * @param rows
-	 * @param columns
-	 */
-	public static Matrix zero (int rows, int columns) 
-	{
-		Matrix m = new Matrix (rows, columns);
-		m.setMatrix(new double[rows][columns]);
-		for (int a = 0; a < rows; a++) 
-		{
-			for (int b = 0; b < columns; b++) 
-				m.getMatrix()[a][b] = 0;
-		}
-		return m;
-	}
-	/** Overrides values of Matrix with Matrix with all values at 0.*/
-	public void toZero () 
-	{
-		for (int a = 0; a < getRow(); a++) 
-		{
-			for (int b = 0; b < getColumn(); b++) 
-				getMatrix()[a][b] = 0;
-		}
-	}
 	/** Applies translation to matrix.
 	 * @param v the Vec4 to translate by.
 	 */
@@ -134,10 +100,7 @@ public class Matrix {
 	public Matrix translateMatrix (Vec4 v) 
 	{
 		Matrix m = new Matrix ();
-		m.set(v.getX(), 0, 3);
-		m.set(v.getY(), 1, 3);
-		m.set(v.getZ(), 2, 3);
-		m.set(v.getW(), 3, 3);
+		m.Translate(v);
 		return m;
 	}
 	/** Applies YXZ rotation to Matrix.
@@ -205,18 +168,16 @@ public class Matrix {
 	/** Returns the scaling matrix of the Scale.
 	 * @param s the Scale.
 	 */
-	public Matrix scale (Scale s) 
+	public Matrix Scale (Scale s) 
 	{
 		Matrix m = new Matrix ();
-		m.set (Math.abs(s.getX()), 0, 0);
-		m.set (Math.abs(s.getY()), 1, 1);
-		m.set (Math.abs(s.getZ()), 2, 2);
+		scale (s);
 		return m;
 	}
 	/** Returns the scaling matrix of the Scale.
 	 * @param s the Scale.
 	 */
-	private void Scale (Scale s) 
+	private void scale (Scale s) 
 	{
 		set (Math.abs(s.getX()), 0, 0);
 		set (Math.abs(s.getY()), 1, 1);
@@ -313,6 +274,15 @@ public class Matrix {
 	{
 		getMatrix()[row][column] = value;
 	}
+	/** Gets the Matrix value at the provided index.
+	 * @param row the row index.
+	 * @param column the column index.
+	 * @return the Matrix value.
+	 */
+	public double get (int row, int column) 
+	{
+		return getMatrix()[row][column];
+	}
 	/** Gets the Matrix.
 	 * @return the matrix.
 	 */
@@ -326,15 +296,6 @@ public class Matrix {
 	public void setMatrix(double[][] matrix) 
 	{
 		this.matrix = matrix;
-	}
-	/** Gets the Matrix value at the provided index.
-	 * @param row the row index.
-	 * @param column the column index.
-	 * @return the Matrix value.
-	 */
-	public double get (int row, int column) 
-	{
-		return getMatrix()[row][column];
 	}
 	/** Returns the length of the rows in the Matrix.*/
 	public int getRow () 

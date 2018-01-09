@@ -3,8 +3,8 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
-@SuppressWarnings("serial")
 /** The Animator class, implements Serializable. */
+@SuppressWarnings("serial")
 public class Animator implements Serializable {
 	/** The Animations to run.*/
 	private ArrayList<Animation> anim = new ArrayList<Animation>();
